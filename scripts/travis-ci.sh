@@ -9,7 +9,7 @@ if [[ "$BUILD" == "appimage" ]] ; then
   # /usr/share/qt5/mkspecs/features/qscintilla2.prf
   # Taking a wild guess here:
   find /usr -name qscintilla2.prf -exec cp {} . \; # https://github.com/openscad/openscad/issues/981#issuecomment-176820343
-  /usr/share/qt5/mkspecs/features/qscintilla2.prf /opt/qt*/mkspecs/linux-g++/features/
+  sudo cp /usr/share/qt5/mkspecs/features/qscintilla2.prf /opt/qt*/mkspecs/linux-g++/features/
   # Still getting:
   # src/scadlexer.h:5:29: fatal error: Qsci/qsciglobal.h: No such file or directory
   qmake PREFIX=/usr
