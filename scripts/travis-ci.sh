@@ -2,8 +2,8 @@
 
 set -x
 
-find /opt -name qscintilla2.prf # https://github.com/openscad/openscad/blob/master/scintilla.pri#L13
-find /opt -name qscintilla2.prf -exec cp {} . \;
+find /usr -name qscintilla2.prf # https://github.com/openscad/openscad/blob/master/scintilla.pri#L13
+find /usr -name qscintilla2.prf -exec cp {} . \; # https://github.com/openscad/openscad/issues/981#issuecomment-176820343
 qmake PREFIX=/usr
 make -j$(nproc)
 make INSTALL_ROOT=appdir install ; find appdir/
