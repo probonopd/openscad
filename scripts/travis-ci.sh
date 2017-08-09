@@ -2,9 +2,16 @@
 
 if [[ "$BUILD" == "appimage" ]] ; then 
   set -x
-  echo "OPENSCAD_LIBDIR: $OPENSCAD_LIBDIR" # How am I supposed to know what OPENSCAD_LIBDIR is?
-  find /usr -name qscintilla2.prf # https://github.com/openscad/openscad/blob/master/scintilla.pri#L13
+  # Scintilla is not found, as usual :-(
+  # https://github.com/openscad/openscad/blob/master/scintilla.pri#L13
+  # How am I supposed to know what OPENSCAD_LIBDIR is?
+  # The following paths exist:
+  # /usr/share/qt5/mkspecs/features/qscintilla2.prf
+  # Taking a wild guess here:
   find /usr -name qscintilla2.prf -exec cp {} . \; # https://github.com/openscad/openscad/issues/981#issuecomment-176820343
+  /usr/share/qt5/mkspecs/features/qscintilla2.prf /opt/qt*/mkspecs/linux-g++/features/
+  # Still getting:
+  # src/scadlexer.h:5:29: fatal error: Qsci/qsciglobal.h: No such file or directory
   qmake PREFIX=/usr
   make -j$(nproc)
   make INSTALL_ROOT=appdir install ; find appdir/
