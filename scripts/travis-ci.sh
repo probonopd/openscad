@@ -2,6 +2,20 @@
 
 set -x
 
+qmake PREFIX=/usr
+make -j$(nproc)
+make INSTALL_ROOT=appdir install ; find appdir/
+wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" 
+chmod a+x linuxdeployqt*.AppImage
+unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -bundle-non-qt-libs
+./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -appimage
+find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+curl --upload-file ./APPNAME*.AppImage https://transfer.sh/APPNAME-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+
+##################################################################
+exit 0
+
 qmake CONFIG+=experimental CONFIG+=nogui
 make
 
