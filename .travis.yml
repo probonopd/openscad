@@ -5,9 +5,9 @@ matrix:
     - os: linux
       compiler: gcc
       dist: trusty
-      env: 
-        - DIST="trusty" BUILD="test"
-        - DIST="trusty" BUILD="appimage"
+      env:
+        - DIST=trusty BUILD=test
+        - DIST=trusty BUILD=appimage
       sudo: required
       cache: apt
 #    - os: osx
