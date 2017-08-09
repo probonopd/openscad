@@ -1,22 +1,22 @@
 #!/bin/bash
 
-set -x
-
-find /usr -name qscintilla2.prf # https://github.com/openscad/openscad/blob/master/scintilla.pri#L13
-find /usr -name qscintilla2.prf -exec cp {} . \; # https://github.com/openscad/openscad/issues/981#issuecomment-176820343
-qmake PREFIX=/usr
-make -j$(nproc)
-make INSTALL_ROOT=appdir install ; find appdir/
-wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" 
-chmod a+x linuxdeployqt*.AppImage
-unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
-./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -bundle-non-qt-libs
-./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -appimage
-find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
-curl --upload-file ./APPNAME*.AppImage https://transfer.sh/APPNAME-git.$(git rev-parse --short HEAD)-x86_64.AppImage
-
-##################################################################
-exit 0
+if [[ "$BUILD" == "appimage" ]] ; then 
+  set -x
+  echo "OPENSCAD_LIBDIR: $OPENSCAD_LIBDIR" # How am I supposed to know what OPENSCAD_LIBDIR is?
+  find /usr -name qscintilla2.prf # https://github.com/openscad/openscad/blob/master/scintilla.pri#L13
+  find /usr -name qscintilla2.prf -exec cp {} . \; # https://github.com/openscad/openscad/issues/981#issuecomment-176820343
+  qmake PREFIX=/usr
+  make -j$(nproc)
+  make INSTALL_ROOT=appdir install ; find appdir/
+  wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" 
+  chmod a+x linuxdeployqt*.AppImage
+  unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+  ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -bundle-non-qt-libs
+  ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -appimage
+  find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  curl --upload-file ./APPNAME*.AppImage https://transfer.sh/APPNAME-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+  exit $?
+fi
 
 qmake CONFIG+=experimental CONFIG+=nogui
 make
